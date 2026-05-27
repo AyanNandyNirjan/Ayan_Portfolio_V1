@@ -9,7 +9,7 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 import { nitro } from "nitro/vite";
 
 // Redirect TanStack Start's bundled server entry to src/server.ts.
-// Add Nitro Vercel preset so Vercel can host the TanStack Start server build.
+// Nitro makes TanStack Start deploy correctly on Vercel.
 export default defineConfig({
   tanstackStart: {
     server: { entry: "server" },
