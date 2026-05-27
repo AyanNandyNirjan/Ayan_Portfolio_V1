@@ -64,7 +64,7 @@ const Navbar = () => {
             Open
           </div>
           <a
-            href="https://drive.google.com/file/d/1HAjtY7_HmqxKfp14kQ5Qv9yS9pXxrzQp/view?usp=sharing"
+            href="https://drive.google.com/file/d/1BCng1LYCQ0n6dQakpLAGBWGQv_bu7vLa/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-sm font-medium text-foreground bg-card/80 hover:bg-card border border-border hover:border-primary/50 px-5 py-2.5 rounded-full transition-all"
