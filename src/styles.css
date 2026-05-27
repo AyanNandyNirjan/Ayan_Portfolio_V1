@@ -1,0 +1,260 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=General+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=general-sans@300,400,500,600,700&display=swap');
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-ring-offset-background: hsl(var(--background));
+  --color-surface: hsl(var(--surface));
+  --color-glow: hsl(var(--glow));
+  --color-violet-dim: hsl(var(--violet-dim));
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --font-display: "Clash Display", "Space Grotesk", system-ui, sans-serif;
+  --font-serif: "Instrument Serif", "Times New Roman", serif;
+  --font-body: "General Sans", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+:root {
+  --radius: 0.75rem;
+  /* Light theme (default) */
+  --background: 265 45% 95%;
+  --foreground: 265 35% 10%;
+  --card: 270 50% 97%;
+  --card-foreground: 265 35% 10%;
+  --popover: 270 50% 97%;
+  --popover-foreground: 265 35% 10%;
+  --primary: 270 80% 52%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 265 40% 88%;
+  --secondary-foreground: 265 30% 18%;
+  --muted: 265 35% 90%;
+  --muted-foreground: 265 18% 38%;
+  --accent: 285 80% 58%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 265 35% 82%;
+  --input: 265 35% 82%;
+  --ring: 270 80% 52%;
+  --glow: 270 85% 60%;
+  --violet-dim: 270 50% 65%;
+  --surface: 268 50% 92%;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: hsl(268 50% 92%);
+  --sidebar-foreground: hsl(265 35% 10%);
+  --sidebar-primary: hsl(270 80% 52%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(265 40% 86%);
+  --sidebar-accent-foreground: hsl(265 35% 10%);
+  --sidebar-border: hsl(265 35% 82%);
+  --sidebar-ring: hsl(270 80% 52%);
+}
+
+.dark {
+  --background: 260 20% 4%;
+  --foreground: 260 10% 90%;
+  --card: 260 20% 7%;
+  --card-foreground: 260 10% 90%;
+  --popover: 260 20% 8%;
+  --popover-foreground: 260 10% 90%;
+  --primary: 270 80% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 260 30% 12%;
+  --secondary-foreground: 260 10% 85%;
+  --muted: 260 20% 12%;
+  --muted-foreground: 260 10% 50%;
+  --accent: 280 90% 65%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 260 15% 14%;
+  --input: 260 15% 14%;
+  --ring: 270 80% 60%;
+  --glow: 270 80% 60%;
+  --violet-dim: 270 40% 30%;
+  --surface: 260 20% 6%;
+  --sidebar: hsl(260 20% 6%);
+  --sidebar-foreground: hsl(260 10% 90%);
+  --sidebar-primary: hsl(270 80% 60%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(260 30% 14%);
+  --sidebar-accent-foreground: hsl(260 10% 90%);
+  --sidebar-border: hsl(260 20% 15%);
+  --sidebar-ring: hsl(270 80% 60%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 0%, hsl(var(--primary) / 0.15), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 30%, hsl(var(--accent) / 0.12), transparent 60%),
+      radial-gradient(ellipse 70% 40% at 50% 100%, hsl(var(--primary) / 0.10), transparent 60%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 0%, hsl(var(--primary) / 0.10), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 30%, hsl(var(--accent) / 0.08), transparent 60%);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+    font-feature-settings: "ss01", "ss02", "cv11";
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  }
+  .glow-border {
+    box-shadow: 0 0 20px -5px hsl(var(--glow) / 0.3), inset 0 1px 0 hsl(var(--glow) / 0.1);
+  }
+  .glow-text {
+    text-shadow: 0 0 40px hsl(var(--glow) / 0.5);
+  }
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 6rem;
+    font-weight: 700;
+    color: hsl(var(--primary) / 0.06);
+    line-height: 1;
+  }
+  @media (min-width: 768px) {
+    .section-number { font-size: 8rem; }
+  }
+  .container {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1rem;
+    max-width: 1400px;
+  }
+  @media (min-width: 640px) {
+    .container { padding-inline: 1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .container { padding-inline: 2rem; }
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes float-medium {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+.animate-float-slow { animation: float-slow 4s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 3s ease-in-out infinite; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.bento-card {
+  position: relative;
+  background-color: hsl(var(--card) / 0.65);
+  border: 1px solid hsl(var(--border));
+  border-radius: 1.5rem;
+  backdrop-filter: blur(8px);
+  transition: border-color .3s ease, transform .3s ease;
+}
+.bento-card:hover {
+  border-color: hsl(var(--primary) / 0.4);
+}
+.bento-card-glow::after {
+  content: "";
+  position: absolute;
+  inset: auto -40px -40px auto;
+  width: 180px;
+  height: 180px;
+  background: hsl(var(--primary) / 0.18);
+  filter: blur(60px);
+  border-radius: 9999px;
+  opacity: 0;
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+.bento-card-glow:hover::after { opacity: 1; }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--primary) / 0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--primary) / 0.5); }
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
