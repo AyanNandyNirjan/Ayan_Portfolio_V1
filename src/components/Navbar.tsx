@@ -104,7 +104,7 @@ const Navbar = () => {
             </a>
           ))}
           <a
-            href="https://drive.google.com/file/d/1HAjtY7_HmqxKfp14kQ5Qv9yS9pXxrzQp/view?usp=sharing"
+            href="https://drive.google.com/file/d/1MtklfkjKBFdCGxbSbPkxYhDfV3tquWsN/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setMobileOpen(false)}
