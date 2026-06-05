@@ -1,0 +1,370 @@
+import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
+import { connectDB } from "../lib/db";
+import User from "../models/user.model";
+
+function jsonResponse(data: unknown, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+export async function createUserByAdmin(request: Request) {
+  try {
+    await connectDB();
+
+    const body = await request.json();
+    const { name, email, password, role, isActive } = body;
+
+    if (!name || !email || !password) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Name, email and password are required.",
+        },
+        400
+      );
+    }
+
+    const emailValue = String(email).trim().toLowerCase();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(emailValue)) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Please provide a valid email address.",
+        },
+        400
+      );
+    }
+
+    if (String(password).length < 6) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Password must be at least 6 characters.",
+        },
+        400
+      );
+    }
+
+    if (role && !["admin", "user"].includes(role)) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Invalid role value.",
+        },
+        400
+      );
+    }
+
+    const existingUser = await User.findOne({ email: emailValue });
+
+    if (existingUser) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "A user already exists with this email.",
+        },
+        409
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(String(password), 12);
+
+    const newUser = await User.create({
+      name: String(name).trim(),
+      email: emailValue,
+      password: hashedPassword,
+      role: role || "user",
+      isActive: isActive !== undefined ? Boolean(isActive) : true,
+    });
+
+    const safeUser = await User.findById(newUser._id).select("-password");
+
+    return jsonResponse(
+      {
+        success: true,
+        message:
+          role === "admin"
+            ? "Admin created successfully."
+            : "User created successfully.",
+        data: safeUser,
+      },
+      201
+    );
+  } catch (error) {
+    console.error("Create user error:", error);
+
+    return jsonResponse(
+      {
+        success: false,
+        message: "Server error while creating user.",
+      },
+      500
+    );
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    await connectDB();
+
+    const users = await User.find()
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return jsonResponse({
+      success: true,
+      count: users.length,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Get users error:", error);
+
+    return jsonResponse(
+      {
+        success: false,
+        message: "Server error while fetching users.",
+      },
+      500
+    );
+  }
+}
+
+export async function getSingleUser(userId: string) {
+  try {
+    await connectDB();
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Invalid user ID.",
+        },
+        400
+      );
+    }
+
+    const user = await User.findById(userId).select("-password").lean();
+
+    if (!user) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "User not found.",
+        },
+        404
+      );
+    }
+
+    return jsonResponse({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("Get user error:", error);
+
+    return jsonResponse(
+      {
+        success: false,
+        message: "Server error while fetching user.",
+      },
+      500
+    );
+  }
+}
+
+export async function updateUser(userId: string, request: Request) {
+  try {
+    await connectDB();
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Invalid user ID.",
+        },
+        400
+      );
+    }
+
+    const body = await request.json();
+    const { name, email, role, isActive, password } = body;
+
+    const updateData: {
+      name?: string;
+      email?: string;
+      role?: "admin" | "user";
+      isActive?: boolean;
+      password?: string;
+    } = {};
+
+    if (name !== undefined) {
+      if (!String(name).trim()) {
+        return jsonResponse(
+          {
+            success: false,
+            message: "Name cannot be empty.",
+          },
+          400
+        );
+      }
+
+      updateData.name = String(name).trim();
+    }
+
+    if (email !== undefined) {
+      const emailValue = String(email).trim().toLowerCase();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(emailValue)) {
+        return jsonResponse(
+          {
+            success: false,
+            message: "Please provide a valid email address.",
+          },
+          400
+        );
+      }
+
+      const existingUser = await User.findOne({
+        email: emailValue,
+        _id: { $ne: userId },
+      });
+
+      if (existingUser) {
+        return jsonResponse(
+          {
+            success: false,
+            message: "Another user already exists with this email.",
+          },
+          409
+        );
+      }
+
+      updateData.email = emailValue;
+    }
+
+    if (role !== undefined) {
+      if (!["admin", "user"].includes(role)) {
+        return jsonResponse(
+          {
+            success: false,
+            message: "Invalid role value.",
+          },
+          400
+        );
+      }
+
+      updateData.role = role;
+    }
+
+    if (isActive !== undefined) {
+      updateData.isActive = Boolean(isActive);
+    }
+
+    if (password !== undefined && String(password).trim()) {
+      if (String(password).length < 6) {
+        return jsonResponse(
+          {
+            success: false,
+            message: "Password must be at least 6 characters.",
+          },
+          400
+        );
+      }
+
+      updateData.password = await bcrypt.hash(String(password), 12);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true,
+    }).select("-password");
+
+    if (!updatedUser) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "User not found.",
+        },
+        404
+      );
+    }
+
+    return jsonResponse({
+      success: true,
+      message: "User updated successfully.",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Update user error:", error);
+
+    return jsonResponse(
+      {
+        success: false,
+        message: "Server error while updating user.",
+      },
+      500
+    );
+  }
+}
+
+export async function deleteUser(userId: string, currentAdminId: string) {
+  try {
+    await connectDB();
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Invalid user ID.",
+        },
+        400
+      );
+    }
+
+    if (userId === currentAdminId) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "You cannot delete your own admin account.",
+        },
+        400
+      );
+    }
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "User not found.",
+        },
+        404
+      );
+    }
+
+    return jsonResponse({
+      success: true,
+      message: "User deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete user error:", error);
+
+    return jsonResponse(
+      {
+        success: false,
+        message: "Server error while deleting user.",
+      },
+      500
+    );
+  }
+}

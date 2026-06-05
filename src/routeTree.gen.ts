@@ -10,33 +10,205 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as ApiContactMessagesRouteImport } from './routes/api/contact-messages'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
+import { Route as AdminRegisterRouteImport } from './routes/admin/register'
+import { Route as AdminMessagesRouteImport } from './routes/admin/messages'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as ApiAuthMeRouteImport } from './routes/api/auth/me'
+import { Route as ApiAuthAdminRegisterRouteImport } from './routes/api/auth/admin-register'
+import { Route as ApiAuthAdminLoginRouteImport } from './routes/api/auth/admin-login'
+import { Route as ApiAdminUsersRouteImport } from './routes/api/admin/users'
+import { Route as ApiAdminContactMessagesRouteImport } from './routes/api/admin/contact-messages'
+import { Route as ApiAdminUsersUserIdRouteImport } from './routes/api/admin/users.$userId'
+import { Route as ApiAdminContactMessagesMessageIdRouteImport } from './routes/api/admin/contact-messages.$messageId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactMessagesRoute = ApiContactMessagesRouteImport.update({
+  id: '/api/contact-messages',
+  path: '/api/contact-messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRegisterRoute = AdminRegisterRouteImport.update({
+  id: '/admin/register',
+  path: '/admin/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMessagesRoute = AdminMessagesRouteImport.update({
+  id: '/admin/messages',
+  path: '/admin/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthMeRoute = ApiAuthMeRouteImport.update({
+  id: '/api/auth/me',
+  path: '/api/auth/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthAdminRegisterRoute = ApiAuthAdminRegisterRouteImport.update({
+  id: '/api/auth/admin-register',
+  path: '/api/auth/admin-register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthAdminLoginRoute = ApiAuthAdminLoginRouteImport.update({
+  id: '/api/auth/admin-login',
+  path: '/api/auth/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminUsersRoute = ApiAdminUsersRouteImport.update({
+  id: '/api/admin/users',
+  path: '/api/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminContactMessagesRoute = ApiAdminContactMessagesRouteImport.update({
+  id: '/api/admin/contact-messages',
+  path: '/api/admin/contact-messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminUsersUserIdRoute = ApiAdminUsersUserIdRouteImport.update({
+  id: '/$userId',
+  path: '/$userId',
+  getParentRoute: () => ApiAdminUsersRoute,
+} as any)
+const ApiAdminContactMessagesMessageIdRoute =
+  ApiAdminContactMessagesMessageIdRouteImport.update({
+    id: '/$messageId',
+    path: '/$messageId',
+    getParentRoute: () => ApiAdminContactMessagesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/register': typeof AdminRegisterRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/contact-messages': typeof ApiContactMessagesRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/admin/contact-messages': typeof ApiAdminContactMessagesRouteWithChildren
+  '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
+  '/api/auth/admin-login': typeof ApiAuthAdminLoginRoute
+  '/api/auth/admin-register': typeof ApiAuthAdminRegisterRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/admin/contact-messages/$messageId': typeof ApiAdminContactMessagesMessageIdRoute
+  '/api/admin/users/$userId': typeof ApiAdminUsersUserIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/register': typeof AdminRegisterRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/contact-messages': typeof ApiContactMessagesRoute
+  '/admin': typeof AdminIndexRoute
+  '/api/admin/contact-messages': typeof ApiAdminContactMessagesRouteWithChildren
+  '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
+  '/api/auth/admin-login': typeof ApiAuthAdminLoginRoute
+  '/api/auth/admin-register': typeof ApiAuthAdminRegisterRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/admin/contact-messages/$messageId': typeof ApiAdminContactMessagesMessageIdRoute
+  '/api/admin/users/$userId': typeof ApiAdminUsersUserIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/messages': typeof AdminMessagesRoute
+  '/admin/register': typeof AdminRegisterRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/api/contact-messages': typeof ApiContactMessagesRoute
+  '/admin/': typeof AdminIndexRoute
+  '/api/admin/contact-messages': typeof ApiAdminContactMessagesRouteWithChildren
+  '/api/admin/users': typeof ApiAdminUsersRouteWithChildren
+  '/api/auth/admin-login': typeof ApiAuthAdminLoginRoute
+  '/api/auth/admin-register': typeof ApiAuthAdminRegisterRoute
+  '/api/auth/me': typeof ApiAuthMeRoute
+  '/api/admin/contact-messages/$messageId': typeof ApiAdminContactMessagesMessageIdRoute
+  '/api/admin/users/$userId': typeof ApiAdminUsersUserIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin/login'
+    | '/admin/messages'
+    | '/admin/register'
+    | '/admin/users'
+    | '/api/contact-messages'
+    | '/admin/'
+    | '/api/admin/contact-messages'
+    | '/api/admin/users'
+    | '/api/auth/admin-login'
+    | '/api/auth/admin-register'
+    | '/api/auth/me'
+    | '/api/admin/contact-messages/$messageId'
+    | '/api/admin/users/$userId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin/login'
+    | '/admin/messages'
+    | '/admin/register'
+    | '/admin/users'
+    | '/api/contact-messages'
+    | '/admin'
+    | '/api/admin/contact-messages'
+    | '/api/admin/users'
+    | '/api/auth/admin-login'
+    | '/api/auth/admin-register'
+    | '/api/auth/me'
+    | '/api/admin/contact-messages/$messageId'
+    | '/api/admin/users/$userId'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin/login'
+    | '/admin/messages'
+    | '/admin/register'
+    | '/admin/users'
+    | '/api/contact-messages'
+    | '/admin/'
+    | '/api/admin/contact-messages'
+    | '/api/admin/users'
+    | '/api/auth/admin-login'
+    | '/api/auth/admin-register'
+    | '/api/auth/me'
+    | '/api/admin/contact-messages/$messageId'
+    | '/api/admin/users/$userId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminMessagesRoute: typeof AdminMessagesRoute
+  AdminRegisterRoute: typeof AdminRegisterRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  ApiContactMessagesRoute: typeof ApiContactMessagesRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+  ApiAdminContactMessagesRoute: typeof ApiAdminContactMessagesRouteWithChildren
+  ApiAdminUsersRoute: typeof ApiAdminUsersRouteWithChildren
+  ApiAuthAdminLoginRoute: typeof ApiAuthAdminLoginRoute
+  ApiAuthAdminRegisterRoute: typeof ApiAuthAdminRegisterRoute
+  ApiAuthMeRoute: typeof ApiAuthMeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +220,140 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact-messages': {
+      id: '/api/contact-messages'
+      path: '/api/contact-messages'
+      fullPath: '/api/contact-messages'
+      preLoaderRoute: typeof ApiContactMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/register': {
+      id: '/admin/register'
+      path: '/admin/register'
+      fullPath: '/admin/register'
+      preLoaderRoute: typeof AdminRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/messages': {
+      id: '/admin/messages'
+      path: '/admin/messages'
+      fullPath: '/admin/messages'
+      preLoaderRoute: typeof AdminMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/me': {
+      id: '/api/auth/me'
+      path: '/api/auth/me'
+      fullPath: '/api/auth/me'
+      preLoaderRoute: typeof ApiAuthMeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/admin-register': {
+      id: '/api/auth/admin-register'
+      path: '/api/auth/admin-register'
+      fullPath: '/api/auth/admin-register'
+      preLoaderRoute: typeof ApiAuthAdminRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/admin-login': {
+      id: '/api/auth/admin-login'
+      path: '/api/auth/admin-login'
+      fullPath: '/api/auth/admin-login'
+      preLoaderRoute: typeof ApiAuthAdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/users': {
+      id: '/api/admin/users'
+      path: '/api/admin/users'
+      fullPath: '/api/admin/users'
+      preLoaderRoute: typeof ApiAdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/contact-messages': {
+      id: '/api/admin/contact-messages'
+      path: '/api/admin/contact-messages'
+      fullPath: '/api/admin/contact-messages'
+      preLoaderRoute: typeof ApiAdminContactMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/users/$userId': {
+      id: '/api/admin/users/$userId'
+      path: '/$userId'
+      fullPath: '/api/admin/users/$userId'
+      preLoaderRoute: typeof ApiAdminUsersUserIdRouteImport
+      parentRoute: typeof ApiAdminUsersRoute
+    }
+    '/api/admin/contact-messages/$messageId': {
+      id: '/api/admin/contact-messages/$messageId'
+      path: '/$messageId'
+      fullPath: '/api/admin/contact-messages/$messageId'
+      preLoaderRoute: typeof ApiAdminContactMessagesMessageIdRouteImport
+      parentRoute: typeof ApiAdminContactMessagesRoute
+    }
   }
 }
 
+interface ApiAdminContactMessagesRouteChildren {
+  ApiAdminContactMessagesMessageIdRoute: typeof ApiAdminContactMessagesMessageIdRoute
+}
+
+const ApiAdminContactMessagesRouteChildren: ApiAdminContactMessagesRouteChildren =
+  {
+    ApiAdminContactMessagesMessageIdRoute:
+      ApiAdminContactMessagesMessageIdRoute,
+  }
+
+const ApiAdminContactMessagesRouteWithChildren =
+  ApiAdminContactMessagesRoute._addFileChildren(
+    ApiAdminContactMessagesRouteChildren,
+  )
+
+interface ApiAdminUsersRouteChildren {
+  ApiAdminUsersUserIdRoute: typeof ApiAdminUsersUserIdRoute
+}
+
+const ApiAdminUsersRouteChildren: ApiAdminUsersRouteChildren = {
+  ApiAdminUsersUserIdRoute: ApiAdminUsersUserIdRoute,
+}
+
+const ApiAdminUsersRouteWithChildren = ApiAdminUsersRoute._addFileChildren(
+  ApiAdminUsersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminMessagesRoute: AdminMessagesRoute,
+  AdminRegisterRoute: AdminRegisterRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  ApiContactMessagesRoute: ApiContactMessagesRoute,
+  AdminIndexRoute: AdminIndexRoute,
+  ApiAdminContactMessagesRoute: ApiAdminContactMessagesRouteWithChildren,
+  ApiAdminUsersRoute: ApiAdminUsersRouteWithChildren,
+  ApiAuthAdminLoginRoute: ApiAuthAdminLoginRoute,
+  ApiAuthAdminRegisterRoute: ApiAuthAdminRegisterRoute,
+  ApiAuthMeRoute: ApiAuthMeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
