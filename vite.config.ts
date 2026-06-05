@@ -34,10 +34,6 @@ export default defineConfig({
       }),
     ],
 
-    ssr: {
-      external: serverOnlyPackages,
-    },
-
     optimizeDeps: {
       exclude: serverOnlyPackages,
     },
