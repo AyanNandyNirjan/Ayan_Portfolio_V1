@@ -12,8 +12,8 @@
     "format": "prettier --write ."
   },
   "engines": {
-  "node": "22.x"
-},
+    "node": "22.x"
+  },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",
     "@hookform/resolvers": "^5.2.2",
@@ -58,6 +58,7 @@
     "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.575.0",
+    "mongodb": "^7.2.0",
     "mongoose": "^9.6.3",
     "nitro": "^3.0.260522-beta",
     "react": "^19.2.0",
