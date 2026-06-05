@@ -21,14 +21,14 @@ const awards = [
     title: "Organizer Award — National Mobile Photography Contest 2024",
     description:
       "Contributed as an organizer in the National Mobile Photography Contest in collaboration with Realme × DIUPS, managing logistics, promotion, and event execution.",
-    link: "#certificate-photography",
+    link: "https://drive.google.com/file/d/1D9JoJQmNeSJycdDKYOYCYU2NI80ta42h/view?usp=sharing",
   },
   {
     date: "January 29, 2024",
     title: "Organizer Award — DIU Beautiful Campus Photography Exhibition",
     description:
       "Contributed as an organizer in planning, coordinating, and executing the photography exhibition on the DIU campus.",
-    link: "#certificate-diu-exhibition",
+    link: "https://drive.google.com/file/d/1-yPDULuXNhkgr4ckCMJN2B-0Fu5gtwBa/view?usp=sharing",
   },
   {
     date: "May 21, 2022",
