@@ -3,12 +3,19 @@ import { connectDB } from "../lib/db";
 import ContactMessage from "../models/contactMessage.model";
 
 function jsonResponse(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return Response.json(data, { status });
+}
+
+function cleanString(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidObjectId(id: string) {
+  return mongoose.Types.ObjectId.isValid(id);
 }
 
 export async function createContactMessage(request: Request) {
@@ -16,7 +23,11 @@ export async function createContactMessage(request: Request) {
     await connectDB();
 
     const body = await request.json();
-    const { name, email, subject, message } = body;
+
+    const name = cleanString(body.name);
+    const email = cleanString(body.email).toLowerCase();
+    const subject = cleanString(body.subject);
+    const message = cleanString(body.message);
 
     if (!name || !email || !subject || !message) {
       return jsonResponse(
@@ -28,13 +39,41 @@ export async function createContactMessage(request: Request) {
       );
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (name.length < 2) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Name must be at least 2 characters.",
+        },
+        400
+      );
+    }
 
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
       return jsonResponse(
         {
           success: false,
           message: "Please provide a valid email address.",
+        },
+        400
+      );
+    }
+
+    if (subject.length < 2) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Subject must be at least 2 characters.",
+        },
+        400
+      );
+    }
+
+    if (message.length < 5) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Message must be at least 5 characters.",
         },
         400
       );
@@ -45,6 +84,7 @@ export async function createContactMessage(request: Request) {
       email,
       subject,
       message,
+      status: "unread",
     });
 
     return jsonResponse(
@@ -61,7 +101,7 @@ export async function createContactMessage(request: Request) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while sending message.",
+        message: "Message could not be sent. Please try again.",
       },
       500
     );
@@ -87,7 +127,7 @@ export async function getAllContactMessages() {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while fetching messages.",
+        message: "Messages could not be loaded. Please try again.",
       },
       500
     );
@@ -98,7 +138,7 @@ export async function getSingleContactMessage(messageId: string) {
   try {
     await connectDB();
 
-    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+    if (!isValidObjectId(messageId)) {
       return jsonResponse(
         {
           success: false,
@@ -130,7 +170,7 @@ export async function getSingleContactMessage(messageId: string) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while fetching message.",
+        message: "Message could not be loaded. Please try again.",
       },
       500
     );
@@ -144,7 +184,7 @@ export async function updateContactMessageStatus(
   try {
     await connectDB();
 
-    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+    if (!isValidObjectId(messageId)) {
       return jsonResponse(
         {
           success: false,
@@ -155,9 +195,11 @@ export async function updateContactMessageStatus(
     }
 
     const body = await request.json();
-    const { status } = body;
+    const status = cleanString(body.status);
 
-    if (!["unread", "read", "archived"].includes(status)) {
+    const allowedStatuses = ["unread", "read", "archived"];
+
+    if (!allowedStatuses.includes(status)) {
       return jsonResponse(
         {
           success: false,
@@ -170,8 +212,11 @@ export async function updateContactMessageStatus(
     const updatedMessage = await ContactMessage.findByIdAndUpdate(
       messageId,
       { status },
-      { new: true }
-    );
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).lean();
 
     if (!updatedMessage) {
       return jsonResponse(
@@ -194,7 +239,7 @@ export async function updateContactMessageStatus(
     return jsonResponse(
       {
         success: false,
-        message: "Server error while updating message.",
+        message: "Message status could not be updated. Please try again.",
       },
       500
     );
@@ -205,7 +250,7 @@ export async function deleteContactMessage(messageId: string) {
   try {
     await connectDB();
 
-    if (!mongoose.Types.ObjectId.isValid(messageId)) {
+    if (!isValidObjectId(messageId)) {
       return jsonResponse(
         {
           success: false,
@@ -215,7 +260,9 @@ export async function deleteContactMessage(messageId: string) {
       );
     }
 
-    const deletedMessage = await ContactMessage.findByIdAndDelete(messageId);
+    const deletedMessage = await ContactMessage.findByIdAndDelete(
+      messageId
+    ).lean();
 
     if (!deletedMessage) {
       return jsonResponse(
@@ -237,7 +284,7 @@ export async function deleteContactMessage(messageId: string) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while deleting message.",
+        message: "Message could not be deleted. Please try again.",
       },
       500
     );

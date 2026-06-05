@@ -4,12 +4,19 @@ import { connectDB } from "../lib/db";
 import User from "../models/user.model";
 
 function jsonResponse(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return Response.json(data, { status });
+}
+
+function cleanString(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function isValidObjectId(id: string) {
+  return mongoose.Types.ObjectId.isValid(id);
 }
 
 export async function createUserByAdmin(request: Request) {
@@ -17,7 +24,13 @@ export async function createUserByAdmin(request: Request) {
     await connectDB();
 
     const body = await request.json();
-    const { name, email, password, role, isActive } = body;
+
+    const name = cleanString(body.name);
+    const email = cleanString(body.email).toLowerCase();
+    const password = cleanString(body.password);
+    const role = cleanString(body.role) || "user";
+    const isActive =
+      body.isActive !== undefined ? Boolean(body.isActive) : true;
 
     if (!name || !email || !password) {
       return jsonResponse(
@@ -29,10 +42,17 @@ export async function createUserByAdmin(request: Request) {
       );
     }
 
-    const emailValue = String(email).trim().toLowerCase();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (name.length < 2) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Name must be at least 2 characters.",
+        },
+        400
+      );
+    }
 
-    if (!emailRegex.test(emailValue)) {
+    if (!isValidEmail(email)) {
       return jsonResponse(
         {
           success: false,
@@ -42,7 +62,7 @@ export async function createUserByAdmin(request: Request) {
       );
     }
 
-    if (String(password).length < 6) {
+    if (password.length < 6) {
       return jsonResponse(
         {
           success: false,
@@ -52,7 +72,7 @@ export async function createUserByAdmin(request: Request) {
       );
     }
 
-    if (role && !["admin", "user"].includes(role)) {
+    if (!["admin", "user"].includes(role)) {
       return jsonResponse(
         {
           success: false,
@@ -62,7 +82,7 @@ export async function createUserByAdmin(request: Request) {
       );
     }
 
-    const existingUser = await User.findOne({ email: emailValue });
+    const existingUser = await User.findOne({ email }).lean();
 
     if (existingUser) {
       return jsonResponse(
@@ -74,17 +94,19 @@ export async function createUserByAdmin(request: Request) {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(String(password), 12);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     const newUser = await User.create({
-      name: String(name).trim(),
-      email: emailValue,
+      name,
+      email,
       password: hashedPassword,
-      role: role || "user",
-      isActive: isActive !== undefined ? Boolean(isActive) : true,
+      role,
+      isActive,
     });
 
-    const safeUser = await User.findById(newUser._id).select("-password");
+    const safeUser = await User.findById(newUser._id)
+      .select("-password")
+      .lean();
 
     return jsonResponse(
       {
@@ -103,7 +125,7 @@ export async function createUserByAdmin(request: Request) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while creating user.",
+        message: "User could not be created. Please try again.",
       },
       500
     );
@@ -130,7 +152,7 @@ export async function getAllUsers() {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while fetching users.",
+        message: "Users could not be loaded. Please try again.",
       },
       500
     );
@@ -141,7 +163,7 @@ export async function getSingleUser(userId: string) {
   try {
     await connectDB();
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!isValidObjectId(userId)) {
       return jsonResponse(
         {
           success: false,
@@ -173,7 +195,7 @@ export async function getSingleUser(userId: string) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while fetching user.",
+        message: "User could not be loaded. Please try again.",
       },
       500
     );
@@ -184,7 +206,7 @@ export async function updateUser(userId: string, request: Request) {
   try {
     await connectDB();
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!isValidObjectId(userId)) {
       return jsonResponse(
         {
           success: false,
@@ -195,7 +217,6 @@ export async function updateUser(userId: string, request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, role, isActive, password } = body;
 
     const updateData: {
       name?: string;
@@ -205,8 +226,10 @@ export async function updateUser(userId: string, request: Request) {
       password?: string;
     } = {};
 
-    if (name !== undefined) {
-      if (!String(name).trim()) {
+    if (body.name !== undefined) {
+      const name = cleanString(body.name);
+
+      if (!name) {
         return jsonResponse(
           {
             success: false,
@@ -216,14 +239,23 @@ export async function updateUser(userId: string, request: Request) {
         );
       }
 
-      updateData.name = String(name).trim();
+      if (name.length < 2) {
+        return jsonResponse(
+          {
+            success: false,
+            message: "Name must be at least 2 characters.",
+          },
+          400
+        );
+      }
+
+      updateData.name = name;
     }
 
-    if (email !== undefined) {
-      const emailValue = String(email).trim().toLowerCase();
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (body.email !== undefined) {
+      const email = cleanString(body.email).toLowerCase();
 
-      if (!emailRegex.test(emailValue)) {
+      if (!isValidEmail(email)) {
         return jsonResponse(
           {
             success: false,
@@ -234,9 +266,9 @@ export async function updateUser(userId: string, request: Request) {
       }
 
       const existingUser = await User.findOne({
-        email: emailValue,
+        email,
         _id: { $ne: userId },
-      });
+      }).lean();
 
       if (existingUser) {
         return jsonResponse(
@@ -248,10 +280,12 @@ export async function updateUser(userId: string, request: Request) {
         );
       }
 
-      updateData.email = emailValue;
+      updateData.email = email;
     }
 
-    if (role !== undefined) {
+    if (body.role !== undefined) {
+      const role = cleanString(body.role);
+
       if (!["admin", "user"].includes(role)) {
         return jsonResponse(
           {
@@ -262,31 +296,37 @@ export async function updateUser(userId: string, request: Request) {
         );
       }
 
-      updateData.role = role;
+      updateData.role = role as "admin" | "user";
     }
 
-    if (isActive !== undefined) {
-      updateData.isActive = Boolean(isActive);
+    if (body.isActive !== undefined) {
+      updateData.isActive = Boolean(body.isActive);
     }
 
-    if (password !== undefined && String(password).trim()) {
-      if (String(password).length < 6) {
-        return jsonResponse(
-          {
-            success: false,
-            message: "Password must be at least 6 characters.",
-          },
-          400
-        );
+    if (body.password !== undefined) {
+      const password = cleanString(body.password);
+
+      if (password) {
+        if (password.length < 6) {
+          return jsonResponse(
+            {
+              success: false,
+              message: "Password must be at least 6 characters.",
+            },
+            400
+          );
+        }
+
+        updateData.password = await bcrypt.hash(password, 12);
       }
-
-      updateData.password = await bcrypt.hash(String(password), 12);
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
       runValidators: true,
-    }).select("-password");
+    })
+      .select("-password")
+      .lean();
 
     if (!updatedUser) {
       return jsonResponse(
@@ -309,7 +349,7 @@ export async function updateUser(userId: string, request: Request) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while updating user.",
+        message: "User could not be updated. Please try again.",
       },
       500
     );
@@ -320,7 +360,7 @@ export async function deleteUser(userId: string, currentAdminId: string) {
   try {
     await connectDB();
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!isValidObjectId(userId)) {
       return jsonResponse(
         {
           success: false,
@@ -340,7 +380,7 @@ export async function deleteUser(userId: string, currentAdminId: string) {
       );
     }
 
-    const deletedUser = await User.findByIdAndDelete(userId);
+    const deletedUser = await User.findByIdAndDelete(userId).lean();
 
     if (!deletedUser) {
       return jsonResponse(
@@ -362,7 +402,7 @@ export async function deleteUser(userId: string, currentAdminId: string) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while deleting user.",
+        message: "User could not be deleted. Please try again.",
       },
       500
     );

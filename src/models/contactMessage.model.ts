@@ -1,34 +1,44 @@
-import mongoose, { Schema, type InferSchemaType } from "mongoose";
+import mongoose, {
+  Schema,
+  model,
+  models,
+  type InferSchemaType,
+  type Model,
+} from "mongoose";
 
 const contactMessageSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
       trim: true,
-      maxlength: 100,
+      minlength: [2, "Name must be at least 2 characters"],
+      maxlength: [100, "Name cannot exceed 100 characters"],
     },
 
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       trim: true,
       lowercase: true,
-      maxlength: 255,
+      maxlength: [255, "Email cannot exceed 255 characters"],
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide a valid email"],
     },
 
     subject: {
       type: String,
-      required: true,
+      required: [true, "Subject is required"],
       trim: true,
-      maxlength: 200,
+      minlength: [2, "Subject must be at least 2 characters"],
+      maxlength: [200, "Subject cannot exceed 200 characters"],
     },
 
     message: {
       type: String,
-      required: true,
+      required: [true, "Message is required"],
       trim: true,
-      maxlength: 1000,
+      minlength: [5, "Message must be at least 5 characters"],
+      maxlength: [1000, "Message cannot exceed 1000 characters"],
     },
 
     status: {
@@ -37,13 +47,18 @@ const contactMessageSchema = new Schema(
       default: "unread",
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
+
+contactMessageSchema.index({ createdAt: -1 });
+contactMessageSchema.index({ status: 1 });
 
 export type ContactMessageType = InferSchemaType<typeof contactMessageSchema>;
 
 const ContactMessage =
-  mongoose.models.ContactMessage ||
-  mongoose.model("ContactMessage", contactMessageSchema);
+  (models.ContactMessage as Model<ContactMessageType>) ||
+  model<ContactMessageType>("ContactMessage", contactMessageSchema);
 
 export default ContactMessage;

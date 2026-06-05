@@ -17,21 +17,24 @@ declare global {
   var mongooseCache: CachedMongoose | undefined;
 }
 
-const cached: CachedMongoose = global.mongooseCache || {
+const cached: CachedMongoose = globalThis.mongooseCache || {
   conn: null,
   promise: null,
 };
 
-if (!global.mongooseCache) {
-  global.mongooseCache = cached;
+if (!globalThis.mongooseCache) {
+  globalThis.mongooseCache = cached;
 }
 
 export async function connectDB() {
-  if (cached.conn) return cached.conn;
+  if (cached.conn) {
+    return cached.conn;
+  }
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URL as string, {
       dbName: DB_NAME,
+      bufferCommands: false,
     });
   }
 
