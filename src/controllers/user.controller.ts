@@ -1,7 +1,5 @@
-import bcrypt from "bcryptjs";
-import mongoose from "mongoose";
-import { connectDB } from "../lib/db";
-import User from "../models/user.model";
+import { connectDB, getMongoose } from "../lib/db";
+import { getUserModel } from "../models/user.model";
 
 function jsonResponse(data: unknown, status = 200) {
   return Response.json(data, { status });
@@ -15,13 +13,22 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function isValidObjectId(id: string) {
-  return mongoose.Types.ObjectId.isValid(id);
+async function getBcrypt() {
+  const runtimeImport = new Function(
+    "packageName",
+    "return import(packageName)"
+  ) as (packageName: string) => Promise<typeof import("bcryptjs")>;
+
+  const bcryptModule = await runtimeImport("bcryptjs");
+  return bcryptModule.default;
 }
 
 export async function createUserByAdmin(request: Request) {
   try {
     await connectDB();
+
+    const User = await getUserModel();
+    const bcrypt = await getBcrypt();
 
     const body = await request.json();
 
@@ -37,16 +44,6 @@ export async function createUserByAdmin(request: Request) {
         {
           success: false,
           message: "Name, email and password are required.",
-        },
-        400
-      );
-    }
-
-    if (name.length < 2) {
-      return jsonResponse(
-        {
-          success: false,
-          message: "Name must be at least 2 characters.",
         },
         400
       );
@@ -136,6 +133,8 @@ export async function getAllUsers() {
   try {
     await connectDB();
 
+    const User = await getUserModel();
+
     const users = await User.find()
       .select("-password")
       .sort({ createdAt: -1 })
@@ -163,7 +162,10 @@ export async function getSingleUser(userId: string) {
   try {
     await connectDB();
 
-    if (!isValidObjectId(userId)) {
+    const mongoose = await getMongoose();
+    const User = await getUserModel();
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return jsonResponse(
         {
           success: false,
@@ -206,7 +208,11 @@ export async function updateUser(userId: string, request: Request) {
   try {
     await connectDB();
 
-    if (!isValidObjectId(userId)) {
+    const mongoose = await getMongoose();
+    const User = await getUserModel();
+    const bcrypt = await getBcrypt();
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return jsonResponse(
         {
           success: false,
@@ -234,16 +240,6 @@ export async function updateUser(userId: string, request: Request) {
           {
             success: false,
             message: "Name cannot be empty.",
-          },
-          400
-        );
-      }
-
-      if (name.length < 2) {
-        return jsonResponse(
-          {
-            success: false,
-            message: "Name must be at least 2 characters.",
           },
           400
         );
@@ -360,7 +356,10 @@ export async function deleteUser(userId: string, currentAdminId: string) {
   try {
     await connectDB();
 
-    if (!isValidObjectId(userId)) {
+    const mongoose = await getMongoose();
+    const User = await getUserModel();
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return jsonResponse(
         {
           success: false,

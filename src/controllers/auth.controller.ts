@@ -1,7 +1,5 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { connectDB } from "../lib/db";
-import User from "../models/user.model";
+import { getUserModel } from "../models/user.model";
 import { requireAdmin } from "../middleware/auth.middleware";
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -11,19 +9,44 @@ if (!JWT_SECRET) {
 }
 
 function jsonResponse(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return Response.json(data, { status });
 }
 
-function generateToken(user: {
+function cleanString(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function getBcrypt() {
+  const runtimeImport = new Function(
+    "packageName",
+    "return import(packageName)"
+  ) as (packageName: string) => Promise<typeof import("bcryptjs")>;
+
+  const bcryptModule = await runtimeImport("bcryptjs");
+  return bcryptModule.default;
+}
+
+async function getJwt() {
+  const runtimeImport = new Function(
+    "packageName",
+    "return import(packageName)"
+  ) as (packageName: string) => Promise<typeof import("jsonwebtoken")>;
+
+  const jwtModule = await runtimeImport("jsonwebtoken");
+  return jwtModule.default;
+}
+
+async function generateToken(user: {
   _id: unknown;
   email: string;
   role: "admin" | "user";
 }) {
+  const jwt = await getJwt();
+
   return jwt.sign(
     {
       id: String(user._id),
@@ -41,24 +64,36 @@ export async function registerAdmin(request: Request) {
   try {
     await connectDB();
 
+    const User = await getUserModel();
+    const bcrypt = await getBcrypt();
+
     const adminCount = await User.countDocuments({ role: "admin" });
 
-    /**
-     * First admin can register without token.
-     * After first admin exists, only logged-in admin can create another admin.
-     */
     if (adminCount > 0) {
-      requireAdmin(request);
+      await requireAdmin(request);
     }
 
     const body = await request.json();
-    const { name, email, password } = body;
+
+    const name = cleanString(body.name);
+    const email = cleanString(body.email).toLowerCase();
+    const password = cleanString(body.password);
 
     if (!name || !email || !password) {
       return jsonResponse(
         {
           success: false,
           message: "Name, email and password are required.",
+        },
+        400
+      );
+    }
+
+    if (!isValidEmail(email)) {
+      return jsonResponse(
+        {
+          success: false,
+          message: "Please provide a valid email address.",
         },
         400
       );
@@ -74,7 +109,7 @@ export async function registerAdmin(request: Request) {
       );
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email }).lean();
 
     if (existingUser) {
       return jsonResponse(
@@ -93,9 +128,10 @@ export async function registerAdmin(request: Request) {
       email,
       password: hashedPassword,
       role: "admin",
+      isActive: true,
     });
 
-    const token = generateToken({
+    const token = await generateToken({
       _id: admin._id,
       email: admin.email,
       role: admin.role,
@@ -123,7 +159,7 @@ export async function registerAdmin(request: Request) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while registering admin.",
+        message: "Admin could not be registered. Please try again.",
       },
       500
     );
@@ -134,8 +170,13 @@ export async function loginAdmin(request: Request) {
   try {
     await connectDB();
 
+    const User = await getUserModel();
+    const bcrypt = await getBcrypt();
+
     const body = await request.json();
-    const { email, password } = body;
+
+    const email = cleanString(body.email).toLowerCase();
+    const password = cleanString(body.password);
 
     if (!email || !password) {
       return jsonResponse(
@@ -183,7 +224,7 @@ export async function loginAdmin(request: Request) {
       );
     }
 
-    const token = generateToken({
+    const token = await generateToken({
       _id: admin._id,
       email: admin.email,
       role: admin.role,
@@ -206,7 +247,7 @@ export async function loginAdmin(request: Request) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while logging in admin.",
+        message: "Admin could not log in. Please try again.",
       },
       500
     );
@@ -217,7 +258,9 @@ export async function getMe(request: Request) {
   try {
     await connectDB();
 
-    const authUser = requireAdmin(request);
+    const User = await getUserModel();
+
+    const authUser = await requireAdmin(request);
 
     const user = await User.findById(authUser.id).select("-password").lean();
 
@@ -243,7 +286,7 @@ export async function getMe(request: Request) {
     return jsonResponse(
       {
         success: false,
-        message: "Server error while fetching profile.",
+        message: "Profile could not be loaded. Please try again.",
       },
       500
     );

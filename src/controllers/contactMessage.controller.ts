@@ -1,6 +1,5 @@
-import mongoose from "mongoose";
-import { connectDB } from "../lib/db";
-import ContactMessage from "../models/contactMessage.model";
+import { connectDB, getMongoose } from "../lib/db";
+import { getContactMessageModel } from "../models/contactMessage.model";
 
 function jsonResponse(data: unknown, status = 200) {
   return Response.json(data, { status });
@@ -14,13 +13,11 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function isValidObjectId(id: string) {
-  return mongoose.Types.ObjectId.isValid(id);
-}
-
 export async function createContactMessage(request: Request) {
   try {
     await connectDB();
+
+    const ContactMessage = await getContactMessageModel();
 
     const body = await request.json();
 
@@ -112,6 +109,8 @@ export async function getAllContactMessages() {
   try {
     await connectDB();
 
+    const ContactMessage = await getContactMessageModel();
+
     const messages = await ContactMessage.find()
       .sort({ createdAt: -1 })
       .lean();
@@ -138,7 +137,10 @@ export async function getSingleContactMessage(messageId: string) {
   try {
     await connectDB();
 
-    if (!isValidObjectId(messageId)) {
+    const mongoose = await getMongoose();
+    const ContactMessage = await getContactMessageModel();
+
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return jsonResponse(
         {
           success: false,
@@ -184,7 +186,10 @@ export async function updateContactMessageStatus(
   try {
     await connectDB();
 
-    if (!isValidObjectId(messageId)) {
+    const mongoose = await getMongoose();
+    const ContactMessage = await getContactMessageModel();
+
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return jsonResponse(
         {
           success: false,
@@ -250,7 +255,10 @@ export async function deleteContactMessage(messageId: string) {
   try {
     await connectDB();
 
-    if (!isValidObjectId(messageId)) {
+    const mongoose = await getMongoose();
+    const ContactMessage = await getContactMessageModel();
+
+    if (!mongoose.Types.ObjectId.isValid(messageId)) {
       return jsonResponse(
         {
           success: false,
