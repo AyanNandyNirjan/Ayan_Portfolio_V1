@@ -1,3 +1,4 @@
+// src/components/ProjectsSection.tsx
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Github, Sparkle } from "lucide-react";
@@ -14,94 +15,101 @@ const projects = [
   {
     number: "001",
     title: "Travel Tribe",
-    caption: "All-in-one travel platform for booking, itinerary planning, and discovery",
+    description:
+      "All-in-one travel platform for booking, itinerary planning, and discovery",
     tags: ["Next.js", "Node.js", "PostgreSQL", "Tailwind CSS"],
-    github: "https://github.com/AyanNandyNirjan/Travel_Tribe",
-    live: "https://travel-tribe.vercel.app/",
     image: travelTribeImg,
+    live: "https://travel-tribe.example.com",
+    code: "https://github.com/AyanNandyNirjan/Travel-Tribe",
   },
   {
     number: "002",
     title: "Hungry Fox",
-    caption: "Food ordering web app for browsing restaurants and live delivery tracking",
+    description:
+      "Food ordering web app for browsing restaurants and live delivery tracking",
     tags: ["React", "Node.js", "Express.js", "MongoDB"],
-    github: "https://github.com/AyanNandyNirjan/Hungry_Fox",
-    live: "https://hungry-fox-food-delivery.vercel.app/",
     image: hungryFoxImg,
+    live: "https://hungry-fox-food-delivery.vercel.app/",
+    code: "https://github.com/AyanNandyNirjan/Hungry-Fox",
   },
   {
     number: "003",
     title: "ARF Security",
-    caption: "Linux CLI utility for secure file encryption and decryption",
+    description: "Linux CLI utility for secure file encryption and decryption",
     tags: ["Python", "Bash", "Linux"],
-    github: "https://github.com/AyanNandyNirjan/arf-security-os",
-    live: null,
     image: arfSecurityImg,
+    live: null,
+    code: "https://github.com/AyanNandyNirjan/ARF-Security",
   },
   {
     number: "004",
     title: "Unimatch",
-    caption: "Mobile app helping international students find peers, housing, and resources",
+    description:
+      "Mobile app helping international students find peers, housing, and resources",
     tags: ["React Native", "Node.js", "Firebase"],
-    github: "https://github.com/AyanNandyNirjan/UniMatch_App",
-    live: "https://drive.google.com/file/d/1P_nem7Mgkkl17WAg8ijxmLg8Y53zlLCB/view?usp=drivesdk",
     image: unimatchImg,
+    live: null,
+    code: "https://github.com/AyanNandyNirjan/Unimatch",
   },
   {
     number: "005",
     title: "ShopWave",
-    caption: "Full-featured ecommerce platform with checkout and admin dashboard",
+    description:
+      "Full-featured ecommerce platform with checkout and admin dashboard",
     tags: ["Next.js", "Tailwind CSS", "PostgreSQL", "Supabase"],
-    github: "https://github.com/AyanNandyNirjan/Shop_Wave",
-    live: "https://shop-wave-master-ybkjzs.free.laravel.cloud/",
     image: shopwaveImg,
+    live: "https://shop-wave-master-ybkjzs.free.laravel.cloud/",
+    code: "https://github.com/AyanNandyNirjan/ShopWave",
   },
   {
     number: "006",
     title: "Local E-mail Server",
-    caption: "Self-hosted SMTP mail server for sending and receiving emails on a local network",
+    description:
+      "Self-hosted email server for sending and receiving mail over a local network",
     tags: ["Node.js", "SMTP", "Networking"],
-    github: "https://github.com/AyanNandyNirjan/Local_Email_Server",
-    live: null,
     image: localEmailServerImg,
+    live: null,
+    code: "https://github.com/AyanNandyNirjan/Local_Email_Server",
   },
   {
     number: "007",
     title: "Screen Sense",
-    caption: "ML-powered screen analytics platform for productivity insights",
+    description:
+      "ML-powered screen-time analyzer with personalized insights and auth",
     tags: ["Machine Learning", "React", "Vercel"],
-    github: "https://github.com/AyanNandyNirjan/Screen-Sense",
-    live: "https://screen-sense-ml.vercel.app/auth",
     image: screenSenseImg,
+    live: "https://screen-sense-ml.vercel.app/auth",
+    code: "https://github.com/AyanNandyNirjan/Screen-Sense",
   },
   {
     number: "008",
     title: "Driving Assistant",
-    caption: "Computer-vision powered driving aid for lane detection and safety alerts",
+    description:
+      "Python-based driving assistant using computer vision for real-time alerts",
     tags: ["Python", "OpenCV", "AI"],
-    github: "https://github.com/AyanNandyNirjan/Driving_Assistant",
-    live: null,
     image: drivingAssistantImg,
+    live: null,
+    code: "https://github.com/AyanNandyNirjan/Driving_Assistant",
   },
-  // Placeholder for Project 009 — uncomment & fill in (also add matching image import above):
+
+  // ===== Add more projects below (uncomment to enable) =====
   // {
   //   number: "009",
   //   title: "Project Name",
-  //   caption: "Short description",
+  //   description: "Short description here",
   //   tags: ["Tag1", "Tag2"],
-  //   github: "https://github.com/...",
-  //   live: null,
-  //   image: project009Img,
+  //   image: yourImg,
+  //   live: "https://...",
+  //   code: "https://github.com/...",
   // },
-  // Placeholder for Project 010 — uncomment & fill in (also add matching image import above):
   // {
   //   number: "010",
   //   title: "Project Name",
-  //   caption: "Short description",
+  //   description: "Short description here",
   //   tags: ["Tag1", "Tag2"],
-  //   github: "https://github.com/...",
+  //   image: yourImg,
   //   live: null,
-  //   image: project010Img,
+  //   code: "https://github.com/...",
   // },
 ];
 
@@ -112,85 +120,81 @@ const ProjectsSection = () => {
   return (
     <section id="projects" className="py-24 px-6">
       <div className="max-w-7xl mx-auto">
-        {/* MY PROJECTS header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 text-sm text-muted-foreground mb-4">
-            <Sparkle className="w-4 h-4" />
-            Selected Work
-          </div>
-          <h2 className="text-5xl md:text-6xl font-black text-foreground">
-            My Projects
+        {/* Heading */}
+        <div className="flex items-center justify-center gap-4 mb-16">
+          <Sparkle className="w-6 h-6 text-foreground" />
+          <h2 className="text-5xl md:text-6xl font-black tracking-tight text-foreground">
+            MY PROJECTS
           </h2>
+          <Sparkle className="w-6 h-6 text-foreground" />
         </div>
 
-        {/* Uniform 3 column grid */}
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visibleProjects.map((project, i) => (
             <motion.div
               key={project.number}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.05 }}
-              className="group rounded-2xl border border-border bg-card p-4 hover:border-foreground/20 transition-colors"
+              className="rounded-2xl bg-card border border-border p-4 flex flex-col"
             >
-              {/* Project thumbnail */}
-              <div className="relative overflow-hidden rounded-xl mb-4 aspect-[4/3]">
+              {/* Image */}
+              <div className="relative rounded-xl overflow-hidden mb-5">
                 <img
                   src={project.image}
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-56 object-cover"
                 />
-                <span className="absolute top-3 left-3 px-2 py-1 rounded-md bg-background/80 backdrop-blur text-xs font-mono text-foreground">
-                  {project.number}
+                <span className="absolute bottom-3 left-3 text-xs font-mono text-foreground/90 bg-black/40 backdrop-blur px-2 py-1 rounded">
+                  // {project.number}
                 </span>
               </div>
 
-              {/* Title */}
-              <div className="mb-3">
-                <h3 className="text-xl font-bold text-foreground">
-                  {project.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {project.caption}
-                </p>
-              </div>
+              {/* Title + description */}
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                {project.title}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {project.description}
+              </p>
 
-              {/* Tech stack tags */}
-              <div className="flex flex-wrap gap-2 mb-4">
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2 mb-5">
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2.5 py-1 text-xs rounded-full border border-border text-muted-foreground"
+                    className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground border border-border bg-background/40 px-2 py-1 rounded"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
 
-              {/* Action buttons — kept as in your design */}
-              <div className="flex items-center gap-4 text-sm">
+              {/* Action buttons */}
+              <div className="mt-auto flex gap-2">
                 {project.live ? (
                   <a
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                    className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-mono uppercase tracking-wider text-white rounded-lg py-2.5 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-400 hover:to-violet-500 transition-colors shadow-[0_0_20px_rgba(139,92,246,0.35)]"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Live View
                   </a>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 text-muted-foreground">
+                  <span className="flex-1 inline-flex items-center justify-center gap-2 text-sm font-mono uppercase tracking-wider text-muted-foreground rounded-lg py-2.5 bg-muted/40 border border-border cursor-not-allowed">
                     <ExternalLink className="w-4 h-4" />
                     Coming Soon
                   </span>
                 )}
                 <a
-                  href={project.github}
+                  href={project.code}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                  className="inline-flex items-center justify-center gap-2 text-sm font-mono uppercase tracking-wider text-foreground rounded-lg py-2.5 px-5 border border-border bg-background/40 hover:bg-background/80 transition-colors"
                 >
                   <Github className="w-4 h-4" />
                   Code
@@ -200,14 +204,14 @@ const ProjectsSection = () => {
           ))}
         </div>
 
-        {/* See More / See Less */}
+        {/* See More toggle */}
         {projects.length > 6 && (
           <div className="flex justify-center mt-12">
             <button
-              onClick={() => setShowAll(!showAll)}
-              className="px-6 py-2.5 rounded-full border border-border text-foreground hover:bg-accent transition-colors text-sm"
+              onClick={() => setShowAll((s) => !s)}
+              className="px-6 py-3 rounded-lg border border-border bg-card text-foreground text-sm font-mono uppercase tracking-wider hover:bg-muted/40 transition-colors"
             >
-              {showAll ? "See Less" : `See More (${projects.length - 6})`}
+              {showAll ? "Show Less" : `See More (${projects.length - 6})`}
             </button>
           </div>
         )}
