@@ -19,7 +19,7 @@ const projects = [
       "All-in-one travel platform for booking, itinerary planning, and discovery",
     tags: ["Next.js", "Node.js", "PostgreSQL", "Tailwind CSS"],
     image: travelTribeImg,
-    live: "https://travel-tribe.example.com",
+    live: "https://travel-tribe.vercel.app/",
     code: "https://github.com/AyanNandyNirjan/Travel-Tribe",
   },
   {
