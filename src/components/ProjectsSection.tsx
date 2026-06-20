@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink, Github, Sparkle } from "lucide-react";
 import travelTribeImg from "@/assets/projects/travel-tribe.jpg";
@@ -55,66 +56,58 @@ const projects = [
 ];
 
 const ProjectsSection = () => {
+  const [showAll, setShowAll] = useState(false);
+  const visibleProjects = showAll ? projects : projects.slice(0, 6);
+
   return (
-    <section id="projects" className="py-20 sm:py-28 relative">
-      <div className="container px-4 sm:px-6">
+    <section id="projects" className="py-24 px-4 md:px-8 bg-background">
+      <div className="max-w-7xl mx-auto">
         {/* MY PROJECTS header with sparkles */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex items-center justify-center gap-4 sm:gap-8 mb-10 sm:mb-14"
-        >
-          <Sparkle className="w-7 h-7 sm:w-10 sm:h-10 text-foreground rotate-12" strokeWidth={1.2} />
-          <h2 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight uppercase text-center">
+        <div className="flex items-center justify-center gap-4 mb-16">
+          <Sparkle className="w-6 h-6 text-white/60" />
+          <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
             My Projects
           </h2>
-          <Sparkle className="w-7 h-7 sm:w-10 sm:h-10 text-foreground -rotate-12" strokeWidth={1.2} />
-        </motion.div>
+          <Sparkle className="w-6 h-6 text-white/60" />
+        </div>
 
         {/* Uniform 3 column grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {projects.map((project, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {visibleProjects.map((project, i) => (
             <motion.div
               key={project.number}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.06 }}
-              className="bento-card bento-card-glow group p-5 flex flex-col h-full"
+              transition={{ duration: 0.4, delay: i * 0.05 }}
+              className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col"
             >
               {/* Project thumbnail */}
-              <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-secondary/40">
+              <div className="relative rounded-xl overflow-hidden mb-5">
                 <img
                   src={project.image}
-                  alt={`${project.title} preview`}
-                  loading="lazy"
-                  width={1280}
-                  height={800}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  alt={project.title}
+                  className="w-full h-48 object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                <div className="absolute bottom-3 left-4 font-mono text-[10px] uppercase tracking-[0.25em] text-white/90">
+                <span className="absolute bottom-2 left-2 text-xs text-white/80 bg-black/50 px-2 py-1 rounded">
                   // {project.number}
-                </div>
+                </span>
               </div>
 
               {/* Title */}
-              <div className="pt-5 px-1">
-                <h3 className="text-lg sm:text-xl font-bold tracking-tight group-hover:text-primary transition-colors">
+              <div className="mb-4">
+                <h3 className="text-xl font-bold text-white mb-2">
                   {project.title}
                 </h3>
-                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-                  {project.caption}
-                </p>
+                <p className="text-sm text-white/60">{project.caption}</p>
               </div>
 
               {/* Tech stack tags */}
-              <div className="flex flex-wrap gap-1.5 mt-3 px-1">
+              <div className="flex flex-wrap gap-2 mb-5">
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary/60 text-secondary-foreground border border-border/60"
+                    className="text-[10px] uppercase tracking-wider text-white/70 border border-white/15 px-2 py-1 rounded"
                   >
                     {tag}
                   </span>
@@ -122,23 +115,20 @@ const ProjectsSection = () => {
               </div>
 
               {/* Action buttons */}
-              <div className="mt-auto pt-5 px-1 flex gap-2">
+              <div className="flex gap-2 mt-auto">
                 {project.live ? (
                   <a
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-xs font-mono uppercase tracking-[0.18em] hover:bg-primary/90 transition-all"
+                    className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-purple-500 text-white text-sm font-medium hover:bg-purple-600 transition-colors"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-4 h-4" />
                     Live View
                   </a>
                 ) : (
-                  <span
-                    aria-disabled="true"
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-muted text-muted-foreground px-4 py-2.5 text-xs font-mono uppercase tracking-[0.18em] cursor-not-allowed"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5" />
+                  <span className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/5 text-white/50 text-sm font-medium cursor-not-allowed">
+                    <ExternalLink className="w-4 h-4" />
                     Coming Soon
                   </span>
                 )}
@@ -146,16 +136,27 @@ const ProjectsSection = () => {
                   href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={`${project.title} on GitHub`}
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background/40 px-4 py-2.5 text-xs font-mono uppercase tracking-[0.18em] text-foreground hover:border-primary hover:text-primary transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-white/15 text-white text-sm font-medium hover:bg-white/10 transition-colors"
                 >
-                  <Github className="w-3.5 h-3.5" />
+                  <Github className="w-4 h-4" />
                   Code
                 </a>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* See More / See Less button */}
+        {projects.length > 6 && (
+          <div className="mt-12 flex justify-center">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="px-8 py-3 rounded-lg border border-white/15 bg-white/5 text-white hover:bg-white/10 transition-colors text-sm font-medium"
+            >
+              {showAll ? "See Less" : "See More"}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
