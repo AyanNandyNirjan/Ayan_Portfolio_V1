@@ -6,6 +6,11 @@ import hungryFoxImg from "@/assets/projects/hungry-fox.jpg";
 import arfSecurityImg from "@/assets/projects/arf-security.jpg";
 import unimatchImg from "@/assets/projects/unimatch.jpg";
 import shopwaveImg from "@/assets/projects/shopwave.jpg";
+// import project006Img from "@/assets/projects/project-006.jpg";
+// import project007Img from "@/assets/projects/project-007.jpg";
+// import project008Img from "@/assets/projects/project-008.jpg";
+// import project009Img from "@/assets/projects/project-009.jpg";
+// import project010Img from "@/assets/projects/project-010.jpg";
 
 const projects = [
   {
@@ -53,6 +58,59 @@ const projects = [
     live: "https://shop-wave-master-ybkjzs.free.laravel.cloud/",
     image: shopwaveImg,
   },
+
+  // ===========================================================
+  // 👇 ADD YOUR NEW PROJECTS BELOW
+  // Uncomment a block, fill in the details, and add the matching
+  // image import at the top of this file.
+  // The "See More" button appears automatically once length > 6.
+  // ===========================================================
+
+  // {
+  //   number: "006",
+  //   title: "Project Title",
+  //   caption: "Short one-line description of the project",
+  //   tags: ["Tech1", "Tech2", "Tech3"],
+  //   github: "https://github.com/AyanNandyNirjan/your-repo",
+  //   live: "https://your-live-url.com", // or set to null if not deployed
+  //   image: project006Img,
+  // },
+  // {
+  //   number: "007",
+  //   title: "Project Title",
+  //   caption: "Short one-line description of the project",
+  //   tags: ["Tech1", "Tech2", "Tech3"],
+  //   github: "https://github.com/AyanNandyNirjan/your-repo",
+  //   live: null,
+  //   image: project007Img,
+  // },
+  // {
+  //   number: "008",
+  //   title: "Project Title",
+  //   caption: "Short one-line description of the project",
+  //   tags: ["Tech1", "Tech2", "Tech3"],
+  //   github: "https://github.com/AyanNandyNirjan/your-repo",
+  //   live: null,
+  //   image: project008Img,
+  // },
+  // {
+  //   number: "009",
+  //   title: "Project Title",
+  //   caption: "Short one-line description of the project",
+  //   tags: ["Tech1", "Tech2", "Tech3"],
+  //   github: "https://github.com/AyanNandyNirjan/your-repo",
+  //   live: null,
+  //   image: project009Img,
+  // },
+  // {
+  //   number: "010",
+  //   title: "Project Title",
+  //   caption: "Short one-line description of the project",
+  //   tags: ["Tech1", "Tech2", "Tech3"],
+  //   github: "https://github.com/AyanNandyNirjan/your-repo",
+  //   live: null,
+  //   image: project010Img,
+  // },
 ];
 
 const ProjectsSection = () => {
@@ -62,7 +120,7 @@ const ProjectsSection = () => {
   return (
     <section id="projects" className="py-24 px-4 md:px-8 bg-background">
       <div className="max-w-7xl mx-auto">
-        {/* MY PROJECTS header with sparkles */}
+        {/* MY PROJECTS header */}
         <div className="flex items-center justify-center gap-4 mb-16">
           <Sparkle className="w-6 h-6 text-white/60" />
           <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
@@ -71,7 +129,7 @@ const ProjectsSection = () => {
           <Sparkle className="w-6 h-6 text-white/60" />
         </div>
 
-        {/* Uniform 3 column grid */}
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {visibleProjects.map((project, i) => (
             <motion.div
@@ -82,27 +140,18 @@ const ProjectsSection = () => {
               transition={{ duration: 0.4, delay: i * 0.05 }}
               className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col"
             >
-              {/* Project thumbnail */}
               <div className="relative rounded-xl overflow-hidden mb-5">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-48 object-cover"
-                />
+                <img src={project.image} alt={project.title} className="w-full h-48 object-cover" />
                 <span className="absolute bottom-2 left-2 text-xs text-white/80 bg-black/50 px-2 py-1 rounded">
                   // {project.number}
                 </span>
               </div>
 
-              {/* Title */}
               <div className="mb-4">
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {project.title}
-                </h3>
+                <h3 className="text-xl font-bold text-white mb-2">{project.title}</h3>
                 <p className="text-sm text-white/60">{project.caption}</p>
               </div>
 
-              {/* Tech stack tags */}
               <div className="flex flex-wrap gap-2 mb-5">
                 {project.tags.map((tag) => (
                   <span
@@ -114,7 +163,6 @@ const ProjectsSection = () => {
                 ))}
               </div>
 
-              {/* Action buttons */}
               <div className="flex gap-2 mt-auto">
                 {project.live ? (
                   <a
@@ -146,7 +194,7 @@ const ProjectsSection = () => {
           ))}
         </div>
 
-        {/* See More / See Less button */}
+        {/* See More / See Less */}
         {projects.length > 6 && (
           <div className="mt-12 flex justify-center">
             <button
