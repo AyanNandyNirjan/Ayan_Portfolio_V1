@@ -78,7 +78,7 @@ const projects = [
       "ML-powered screen-time analyzer with personalized insights and auth",
     tags: ["Machine Learning", "React", "Vercel"],
     image: screenSenseImg,
-    live: "https://screen-sense-ml.vercel.app/auth",
+    live: "https://screen-sense-ml.vercel.app/",
     code: "https://github.com/AyanNandyNirjan/Screen-Sense",
   },
   {
